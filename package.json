@@ -1,0 +1,38 @@
+{
+  "name": "async.prototypes",
+  "version": "1.0.0",
+  "description": "Async prototype functions for arrays and similar objects",
+  "repository": "github:arashkazemi/async.prototypes",
+  "homepage": "https://arashkazemi.github.io/async.prototypes/",
+  "main": "src/async.prototypes.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "keywords": [
+    "async",
+    "prototype",
+    "promise",
+    "array",
+    "map",
+    "reduce"
+  ],
+  "author": {
+    "name": "Arash Kazemi",
+    "email": "contact.arash.kazemi@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "Arash Kazemi",
+      "email": "contact.arash.kazemi@gmail.com",
+      "web": "https://github.com/arashkazemi"
+    }
+  ],
+  "license": "BSD-2-Clause",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev": "^1.1.1"
+  }
+}
