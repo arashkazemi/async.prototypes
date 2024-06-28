@@ -31,7 +31,7 @@
 class AsyncPrototypes 
 {
 
-    native_prototypes;
+    native_prototypes = null;
 
 
     static indexed_collections = [
@@ -60,36 +60,46 @@ class AsyncPrototypes
 
         for(const c of AsyncPrototypes.indexed_collections) {
 
-            AsyncPrototypes.native_prototypes[c.name] = {
-                map: c.prototype.map,
-                every: c.prototype.every,
-                some: c.prototype.some,
-                flatMap: c.prototype.flatMap,
-                find: c.prototype.find,
-                filter: c.prototype.filter,
-                reduce: c.prototype.reduce,
-                reduceRight: c.prototype.reduceRight,
-            };
-
+            try {
+                AsyncPrototypes.native_prototypes[c.name] = {
+                    map: c.prototype.map,
+                    every: c.prototype.every,
+                    some: c.prototype.some,
+                    flatMap: c.prototype.flatMap,
+                    find: c.prototype.find,
+                    filter: c.prototype.filter,
+                    reduce: c.prototype.reduce,
+                    reduceRight: c.prototype.reduceRight,
+                };
+            }
+            catch(e) {}
         }
     }
 
 
     static registerAll()
     {
+        if(AsyncPrototypes.native_prototypes===null) {
+            AsyncPrototypes.init();
+        }
+
         for(const c of AsyncPrototypes.indexed_collections) {
 
-            c.prototype.map = AsyncPrototypes.map;
-            c.prototype.every = AsyncPrototypes.every;
-            c.prototype.some = AsyncPrototypes.some;
-            c.prototype.find = AsyncPrototypes.find;
-            c.prototype.filter = AsyncPrototypes.filter;
-            c.prototype.reduce = AsyncPrototypes.reduce;
-            c.prototype.reduceRight = AsyncPrototypes.reduceRight;
+            try {
+                c.prototype.map = AsyncPrototypes.map;
+                c.prototype.every = AsyncPrototypes.every;
+                c.prototype.some = AsyncPrototypes.some;
+                c.prototype.find = AsyncPrototypes.find;
+                c.prototype.filter = AsyncPrototypes.filter;
+                c.prototype.reduce = AsyncPrototypes.reduce;
+                c.prototype.reduceRight = AsyncPrototypes.reduceRight;
 
-            if(c.name==='Array') {
-                c.prototype.flatMap = AsyncPrototypes.flatMap;
+                if(c.name==='Array') {
+                    c.prototype.flatMap = AsyncPrototypes.flatMap;
+                }
             }
+            catch(e) {}
+
         }
     }
 
@@ -98,16 +108,19 @@ class AsyncPrototypes
     {
         for(const c of AsyncPrototypes.indexed_collections) {
 
-            const np = AsyncPrototypes.native_prototypes[c.name];
-            
-            c.prototype.map = np.map;
-            c.prototype.every = np.every;
-            c.prototype.some = np.some;
-            c.prototype.flatMap = np.flatMap;
-            c.prototype.find = np.find;
-            c.prototype.filter = np.filter;
-            c.prototype.reduce = np.reduce;
-            c.prototype.reduceRight = np.reduceRight;
+            try {
+                const np = AsyncPrototypes.native_prototypes[c.name];
+                
+                c.prototype.map = np.map;
+                c.prototype.every = np.every;
+                c.prototype.some = np.some;
+                c.prototype.flatMap = np.flatMap;
+                c.prototype.find = np.find;
+                c.prototype.filter = np.filter;
+                c.prototype.reduce = np.reduce;
+                c.prototype.reduceRight = np.reduceRight;
+            }
+            catch(e) {}
 
         }
     }
@@ -115,6 +128,10 @@ class AsyncPrototypes
 
     static hook(obj)
     {
+        if(AsyncPrototypes.native_prototypes===null) {
+            AsyncPrototypes.init();
+        }
+
         const np = AsyncPrototypes.native_prototypes[obj.constructor.name];
 
         if(np) {
@@ -425,8 +442,5 @@ class AsyncPrototypes
 
 
 }
-
-
-AsyncPrototypes.init();
 
 module.exports = AsyncPrototypes;
