@@ -1,6 +1,6 @@
 {
   "name": "async.prototypes",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Async prototype functions for arrays and similar objects",
   "repository": "github:arashkazemi/async.prototypes",
   "homepage": "https://arashkazemi.github.io/async.prototypes/",

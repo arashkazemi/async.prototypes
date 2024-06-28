@@ -31,8 +31,7 @@
 class AsyncPrototypes 
 {
 
-    native_prototypes = null;
-
+    static native_prototypes = null;
 
     static indexed_collections = [
         Array,
@@ -70,6 +69,7 @@ class AsyncPrototypes
                     filter: c.prototype.filter,
                     reduce: c.prototype.reduce,
                     reduceRight: c.prototype.reduceRight,
+                    forEach: c.prototype.forEach,
                 };
             }
             catch(e) {}
@@ -93,6 +93,7 @@ class AsyncPrototypes
                 c.prototype.filter = AsyncPrototypes.filter;
                 c.prototype.reduce = AsyncPrototypes.reduce;
                 c.prototype.reduceRight = AsyncPrototypes.reduceRight;
+                c.prototype.forEach = AsyncPrototypes.forEach;
 
                 if(c.name==='Array') {
                     c.prototype.flatMap = AsyncPrototypes.flatMap;
@@ -119,6 +120,7 @@ class AsyncPrototypes
                 c.prototype.filter = np.filter;
                 c.prototype.reduce = np.reduce;
                 c.prototype.reduceRight = np.reduceRight;
+                c.prototype.forEach = np.forEach;
             }
             catch(e) {}
 
@@ -128,6 +130,7 @@ class AsyncPrototypes
 
     static hook(obj)
     {
+
         if(AsyncPrototypes.native_prototypes===null) {
             AsyncPrototypes.init();
         }
@@ -142,6 +145,7 @@ class AsyncPrototypes
             obj.filter = AsyncPrototypes.asyncFilter.bind(obj);
             obj.reduce = AsyncPrototypes.asyncReduce.bind(obj);
             obj.reduceRight = AsyncPrototypes.asyncReduceRight.bind(obj);
+            obj.forEach = AsyncPrototypes.asyncForEach.bind(obj);
 
             if(obj.constructor.name==='Array') {
                 obj.flatMap = AsyncPrototypes.asyncFlatMap;
@@ -164,6 +168,7 @@ class AsyncPrototypes
             delete obj.filter;
             delete obj.reduce;
             delete obj.reduceRight;
+            delete obj.forEach;
 
             if(obj.constructor.name==='Array') {
                 delete obj.flatMap;
@@ -200,9 +205,6 @@ class AsyncPrototypes
         else if(callback.constructor.name==='AsyncFunction') {
             return AsyncPrototypes.asyncEvery.call(this, callback, this_arg);
         }
-        else {
-            throw "something is wrong with this function!";
-        }
     }
 
 
@@ -227,9 +229,6 @@ class AsyncPrototypes
         }
         else if(callback.constructor.name==='AsyncFunction') {
             return AsyncPrototypes.asyncSome.call(this, callback, this_arg);
-        }
-        else {
-            throw "something is wrong with this function!";
         }
     }
 
@@ -256,9 +255,6 @@ class AsyncPrototypes
         else if(callback.constructor.name==='AsyncFunction') {
             return AsyncPrototypes.asyncFind.call(this, callback, this_arg);
         }
-        else {
-            throw "something is wrong with this function!";
-        }
     }
 
 
@@ -282,9 +278,6 @@ class AsyncPrototypes
         }
         else if(callback.constructor.name==='AsyncFunction') {
             return AsyncPrototypes.asyncFilter.call(this, callback, this_arg);
-        }
-        else {
-            throw "something is wrong with this function!";
         }
     }
 
@@ -312,9 +305,6 @@ class AsyncPrototypes
         else if(callback.constructor.name==='AsyncFunction') {
             return AsyncPrototypes.asyncMap.call(this, callback, this_arg);
         }
-        else {
-            throw "something is wrong with this function!";
-        }
     }
 
 
@@ -340,9 +330,6 @@ class AsyncPrototypes
         }
         else if(callback.constructor.name==='AsyncFunction') {
             return AsyncPrototypes.asyncFlatMap.call(this, callback, this_arg);
-        }
-        else {
-            throw "something is wrong with this function!";
         }
     }
 
@@ -386,9 +373,6 @@ class AsyncPrototypes
                 return AsyncPrototypes.asyncReduce.call(this, callback);
             }
             return AsyncPrototypes.asyncReduce.call(this, callback, initial_value);
-        }
-        else {
-            throw "something is wrong with this function!";
         }
     }
 
@@ -434,11 +418,32 @@ class AsyncPrototypes
             }
             return AsyncPrototypes.asyncReduceRight.call(this, callback, initial_value);
         }
-        else {
-            throw "something is wrong with this function!";
-        }
     }
 
+
+
+    //// forEach
+
+    static async asyncForEach(callback, this_arg=undefined)
+    {
+    
+        for (let i=0; i<this.length; i++) {
+        
+            await callback.call(this_arg, this[i]);
+        }
+
+        return undefined;
+    }
+
+    static forEach(callback, this_arg=undefined)
+    {
+        if(callback.constructor.name==='Function') {
+            return AsyncPrototypes.native_prototypes[this.constructor.name].forEach.call(this, callback, this_arg);
+        }
+        else if(callback.constructor.name==='AsyncFunction') {
+            return AsyncPrototypes.asyncForEach.call(this, callback, this_arg);
+        }
+    }
 
 
 }

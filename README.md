@@ -44,6 +44,7 @@ Currently, AsyncPrototypes supports
 - filter
 - reduce
 - reduceRight
+- forEach
 
 methods and fixes them in 
 
